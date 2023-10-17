@@ -21,100 +21,18 @@ import matplotlib.pyplot as plt
 import random
 # Reading the csv file and putting it into 'df' object
 df = pd.read_csv('pore_mgcl.csv')
-#df = pd.read_csv('pore_na2so4.csv')
 df.head()
 
 # Putting feature variable to X
 X = df.drop('MgCl2',axis=1)
 # Putting response variable to y
 y = df['MgCl2']
-#X = df.drop('Na2SO4',axis=1)
-### Putting response variable to y
-#y = df['Na2SO4']
 r_score1,r_score2,r_score3=[],[],[]
 random2r=[]
 rmse_score=[]
 rmse_score1,rmse_score2,rmse_score3=[],[],[]
-#result,result_all=[],[]
-#choice=[]
-#for i in range(40,180,2):
-#    X_train_all, X_test, y_train_all, y_test = train_test_split(X, y, train_size=0.8, random_state=i)#89
-#    X_train_all.shape, X_test.shape
-#    
-#    
-## now lets split the data into train and test
-##Splitting the data into train and test
-##=========================================================================================
-#    for j in range(40,200,2):
-#        X_train, X_ver, y_train, y_ver = train_test_split(X_train_all, y_train_all, train_size=0.8, random_state=j)
-#        X_train.shape, y_ver.shape
-#        
-#        for k in range(5,7,1):
-#            k=k/100
-#            
-#            for l in range(4,7,1):
-#                
-#                model = xgb.XGBRegressor(n_estimators=180, 
-#                         learning_rate=k, 
-#                         max_depth=l, 
-#                         silent=True, 
-#                         objective='reg:squarederror',
-#                         random_state=7)
-#                model.fit(X_train, y_train)
-#                 # 对测试集进行预测
-#                y_pred = model.predict(X_ver)
-#                ## evaluate predictions
-#                pearson_r=stats.pearsonr(y_ver,y_pred)
-#                R2=metrics.r2_score(y_ver,y_pred)
-#                RMSE=metrics.mean_squared_error(y_ver,y_pred)**0.5
-#                print('Pearson correlation coefficient is {0}, and RMSE is {1}.'.format(pearson_r[0],RMSE))
-#                print ('r2_score: %.2f' %R2)
-#                result=[]
-#                result.append(i)
-#                result.append(j)
-#                result.append(k)
-#                result.append(l)
-#                result.append(R2)
-#                result.append(RMSE)
-#                result_all.append(result)
-###########################################################################
-#
-#
-#for i in result_all:
-#    if i[-2]>0.8:
-#        
-#        choice.append(i)
-#
-#                
-#######################################################################            
-#test_r,test_rmse=[],[]
-#for i in choice:
-#    X_train_all, X_test, y_train_all, y_test = train_test_split(X, y, train_size=0.8, random_state=i[0])#89
-#    X_train_all.shape, X_test.shape
-#    X_train, X_ver, y_train, y_ver = train_test_split(X_train_all, y_train_all, train_size=0.8, random_state=i[1])
-#    X_train.shape, y_ver.shape
-#    model = xgb.XGBRegressor(n_estimators=180, 
-#                         learning_rate=i[2], 
-#                         max_depth=i[3], 
-#                         silent=True, 
-#                         objective='reg:squarederror',
-#                         random_state=7)  #reg:gamma squarederror
-#    model.fit(X_train, y_train)      
-#    y_pred = model.predict(X_test)
-#    random_forest_error=y_pred-y_test    
-#    # evaluate predictions
-#    from sklearn import metrics
-#    print('Mean Absolute Error: ', metrics.mean_absolute_error(y_test,y_pred))
-#    pearson_r=stats.pearsonr(y_test,y_pred)
-#    R2=metrics.r2_score(y_test,y_pred)
-#    RMSE=metrics.mean_squared_error(y_test,y_pred)**0.5
-#    test_r.append(R2)
-#    test_rmse.append(RMSE)
-
-
-######################################################################################
-##66 116
-#
+#####################################################################################################
+#The training set and testing set were divided into 8:2
 X_train_all, X_test, y_train_all, y_test = train_test_split(X, y, train_size=0.8, random_state=141)#nacl_117,na2so4_57,71,mgso4_31,mgcl2_141
 X_train_all.shape, X_test.shape
 X_train, X_ver, y_train, y_ver = train_test_split(X_train_all, y_train_all, train_size=0.8, random_state=45)#nacl_45,na2so4_193,33,mgso4_169,mgcl2_45
