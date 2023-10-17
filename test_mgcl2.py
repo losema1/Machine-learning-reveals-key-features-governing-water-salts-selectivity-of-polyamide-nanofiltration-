@@ -35,11 +35,13 @@ rmse_score1,rmse_score2,rmse_score3=[],[],[]
 #The training set and testing set were divided into 8:2
 X_train_all, X_test, y_train_all, y_test = train_test_split(X, y, train_size=0.8, random_state=141)#nacl_117,na2so4_57,71,mgso4_31,mgcl2_141
 X_train_all.shape, X_test.shape
+#The training set and Validation set were divided into 8:2
 X_train, X_ver, y_train, y_ver = train_test_split(X_train_all, y_train_all, train_size=0.8, random_state=45)#nacl_45,na2so4_193,33,mgso4_169,mgcl2_45
 X_train.shape, y_ver.shape
+#training the model
 model = xgb.XGBRegressor(n_estimators=180, 
-                         learning_rate=0.05,#0nacl_0.07,na2so4_0.05,0.05,mgso4_0.06,mgcl2_0.05
-                         max_depth=5, #nacl_5,na2so4_7,7,mgso4_5,mgcl2_5
+                         learning_rate=0.05,
+                         max_depth=5,
                          silent=True, 
                          objective='reg:squarederror',
                          random_state=7,
@@ -47,14 +49,15 @@ model = xgb.XGBRegressor(n_estimators=180,
                          importance_type='total_gain')  #reg:gamma squarederror
 model.fit(X_train, y_train)
 #################################################################################################
-random_forest_predict1=model.predict(X_ver)
-random_forest_error1=random_forest_predict1-y_ver
+#用模型测试验证集，这里ver_predict1是验证集的预测结果，ver_error1是验证集的预测值与实际值的差
+ver_predict1=model.predict(X_ver)
+ver_error1=ver_predict1-y_ver
 # Verify the accuracy
 from sklearn import metrics
-print('Mean Absolute Error: ', metrics.mean_absolute_error(y_ver,random_forest_predict1))
-pearson_r1=stats.pearsonr(y_ver,random_forest_predict1)
-R21=metrics.r2_score(y_ver,random_forest_predict1)
-RMSE1=metrics.mean_squared_error(y_ver,random_forest_predict1)**0.5
+print('Mean Absolute Error: ', metrics.mean_absolute_error(y_ver,ver_predict1))
+pearson_r1=stats.pearsonr(y_ver,ver_predict1)
+R21=metrics.r2_score(y_ver,ver_predict1)
+RMSE1=metrics.mean_squared_error(y_ver,ver_predict1)**0.5
 
 #Draw test plot
 font = {"color": "darkred",
@@ -68,7 +71,7 @@ Text='r='+str(round(pearson_r1[0],2))
 plt.figure(3)
 plt.clf()
 ax=plt.axes(aspect='equal')
-plt.scatter(y_ver,random_forest_predict1,color='red')
+plt.scatter(y_ver,ver_predict1,color='red')
 plt.xlabel('True Values',fontdict=font)
 plt.ylabel('Predictions',fontdict=font)
 Lims=[0,110]
@@ -159,14 +162,14 @@ for i in range(0,300,1):
                  # 对测试集进行预测
     y_pred = model1.predict(X_test)
 #################################################################################################
-    random_forest_predict1=model1.predict(X_train)
-    random_forest_error1=random_forest_predict1-y_train
+    ver_predict1=model1.predict(X_train)
+    ver_error1=ver_predict1-y_train
     # Verify the accuracy
     from sklearn import metrics
-    mae1=metrics.mean_absolute_error(y_train,random_forest_predict1)
-    pearson_r1=stats.pearsonr(y_train,random_forest_predict1)
-    R21=metrics.r2_score(y_train,random_forest_predict1)
-    RMSE1=metrics.mean_squared_error(y_train,random_forest_predict1)**0.5
+    mae1=metrics.mean_absolute_error(y_train,ver_predict1)
+    pearson_r1=stats.pearsonr(y_train,ver_predict1)
+    R21=metrics.r2_score(y_train,ver_predict1)
+    RMSE1=metrics.mean_squared_error(y_train,ver_predict1)**0.5
 ###########################################################################################################
         ## evaluate predictions
     pearson_r=stats.pearsonr(y_test,y_pred)
