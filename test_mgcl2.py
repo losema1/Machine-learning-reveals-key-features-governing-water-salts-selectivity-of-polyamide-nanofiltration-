@@ -3,6 +3,9 @@
 Created on Sun Apr 24 19:22:03 2022
 
 @author: ma
+1.首先将数据分成三个部分：训练集、验证集和测试集
+2.用训练集的数据去训练模型，用验证集来验证模型的准确性，并不断调整超参数
+3.用完善的模型去检测测试集，验证调参之后的模型是否能拥有不错的泛化性，并且我们还重复多次来验证。
 """
 
 # Importing the required libraries
@@ -22,7 +25,6 @@ import random
 # Reading the csv file and putting it into 'df' object
 df = pd.read_csv('pore_mgcl.csv')
 df.head()
-
 # Putting feature variable to X
 X = df.drop('MgCl2',axis=1)
 # Putting response variable to y
@@ -54,12 +56,13 @@ ver_predict1=model.predict(X_ver)
 ver_error1=ver_predict1-y_ver
 # Verify the accuracy
 from sklearn import metrics
+#验证集的MAE，R^2,RMSE数据#######################################################################
 print('Mean Absolute Error: ', metrics.mean_absolute_error(y_ver,ver_predict1))
 pearson_r1=stats.pearsonr(y_ver,ver_predict1)
 R21=metrics.r2_score(y_ver,ver_predict1)
 RMSE1=metrics.mean_squared_error(y_ver,ver_predict1)**0.5
-
-#Draw test plot
+#################################################################################################
+#Draw test plot画图#############################################################################
 font = {"color": "darkred",
         "size": 18,
         "family" : "times new roman"}
@@ -83,12 +86,12 @@ plt.grid(False)
 plt.title('ion',fontdict=font)
 plt.text(2,10,Text,fontdict=font1)
 plt.savefig('figure3.png', dpi=100,bbox_inches='tight') 
-
 ################################################################################################
-# 对测试集进行预测
+# 用训练好的模型对测试集进行预测，y_pred是预测结果集,test_error是测试集的预测值与实际值的差
 y_pred = model.predict(X_test)
-random_forest_error=y_pred-y_test
-# evaluate predictions
+test_error=y_pred-y_test
+# evaluate predictions###########################################################################
+#测试集的MAE，R^2,RMSE数据
 from sklearn import metrics
 print('Mean Absolute Error: ', metrics.mean_absolute_error(y_test,y_pred))
 pearson_r=stats.pearsonr(y_test,y_pred)
@@ -97,7 +100,8 @@ RMSE=metrics.mean_squared_error(y_test,y_pred)**0.5
 print('Pearson correlation coefficient is {0}, and RMSE is {1}.'.format(pearson_r[0],RMSE))
 print ('r2_score: %.2f' %R2)
 rmse_score.append(RMSE)    
-#Draw test plot
+#################################################################################################
+#Draw test plot画图##############################################################################
 font = {"color": "darkred",
         "size": 18,
         "family" : "times new roman"}
@@ -121,25 +125,22 @@ plt.grid(False)
 plt.title('ion',fontdict=font)
 plt.text(2,10,Text,fontdict=font1)
 plt.savefig('figure1.png', dpi=100,bbox_inches='tight')   
-
-
 plt.figure(2)
 plt.clf()
-plt.hist(random_forest_error,bins=30)
+plt.hist(test_error,bins=30)
 plt.xlabel('Prediction Error',fontdict=font)
 plt.ylabel('Count',fontdict=font)
 plt.grid(False)
 plt.title('ion',fontdict=font)
 plt.savefig('figure2.png', dpi=100,bbox_inches='tight')
 print('Pearson correlation coefficient is {0}, and RMSE is {1}.'.format(pearson_r[0],RMSE))
-
-# 显示重要特征
+# 特征重要性部分##############################################################################3
 plot_importance(model,importance_type=('total_gain'))
 pyplot.show()
 feature_importance = model.feature_importances_.tolist()
 #Calculate the importance of variables
 
-###############################################################################################重复做实验
+#######################重复做实验来验证我们的模型可靠########################################################################
 choice_repeat=[]
 for i in range(0,300,1):
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=i)#89
@@ -148,7 +149,7 @@ for i in range(0,300,1):
     
 # now lets split the data into train and test
 #Splitting the data into train and test
-#=========================================================================================
+
 
 
     model1 = xgb.XGBRegressor(n_estimators=180, 
@@ -161,7 +162,7 @@ for i in range(0,300,1):
     model1.fit(X_train, y_train)
                  # 对测试集进行预测
     y_pred = model1.predict(X_test)
-#################################################################################################
+
     ver_predict1=model1.predict(X_train)
     ver_error1=ver_predict1-y_train
     # Verify the accuracy
@@ -170,7 +171,7 @@ for i in range(0,300,1):
     pearson_r1=stats.pearsonr(y_train,ver_predict1)
     R21=metrics.r2_score(y_train,ver_predict1)
     RMSE1=metrics.mean_squared_error(y_train,ver_predict1)**0.5
-###########################################################################################################
+
         ## evaluate predictions
     pearson_r=stats.pearsonr(y_test,y_pred)
     mae=metrics.mean_absolute_error(y_test,y_pred)
